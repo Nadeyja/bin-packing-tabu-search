@@ -4,9 +4,17 @@ import matplotlib.patches as patches
 
 
 def evaluate_solution(bins):
+    """
+    Funkcja celu. Zwraca liczbę binów, które zawierają paczki.
+    Im mniej binów, tym lepiej.
+    """
     return sum(1 for b in bins if b.packages)
 
 def generate_initial_solution(bins, packages):
+    """
+    Tworzy pierwsze sensowne rozwiązanie.
+    Dla każdej paczki próbuje znaleźć pierwszy bin, w którym się mieści (heurystyka: "first-fit")
+    """
     bins = deepcopy(bins)
     for p in packages:
         for b in bins:
@@ -15,6 +23,9 @@ def generate_initial_solution(bins, packages):
     return bins
 
 def get_neighbors(solution):
+    """
+    Generuje sąsiednie rozwiązania przez przeniesienie paczki z jednego binu do drugiego.
+    """
     neighbors = []
     for i, b in enumerate(solution):
         for p in list(b.packages):
@@ -29,6 +40,10 @@ def get_neighbors(solution):
     return neighbors
 
 def visualize_solution(bins):
+    """
+    Tworzy graficzną reprezentację każdego binu.
+    Każdy bin to osobny wykres. Każda paczka to prostokąt z ID wyświetlonym w środku.
+    """
     for b in bins:
         fig, ax = plt.subplots()
         ax.set_title(f"Bin {b.ID}")
@@ -43,6 +58,14 @@ def visualize_solution(bins):
         plt.show()
 
 def tabu_search(bins, packages, iterations=100, tabu_size=10):
+    """
+    Algorytm Tabu Search.
+
+    Tworzy rozwiązanie początkowe (generate_initial_solution).
+    Iteracyjnie znajduje lepsze rozwiązania przez przeszukiwanie sąsiedztwa (get_neighbors).
+    Unika powtarzania tych samych rozwiązań za pomocą listy tabu.
+    Na końcu wypisuje i wizualizuje rozmieszczenie paczek.
+    """
     current_solution = generate_initial_solution(bins, packages)
     best_solution = deepcopy(current_solution)
     tabu_list = []

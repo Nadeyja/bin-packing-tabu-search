@@ -1,4 +1,13 @@
 class Bin:
+    """
+    Klasa reprezentująca kontener (bin), który może pomieścić paczki.
+
+    Atrybuty:
+        W (int): Szerokość kontenera.
+        H (int): Wysokość kontenera.
+        ID (int): Unikalny identyfikator kontenera.
+        packages (list): Lista paczek znajdujących się w kontenerze.
+    """
     bin_start_id = 0
 
     def __init__(self, w, h):
@@ -9,6 +18,9 @@ class Bin:
         self.packages = []
 
     def can_fit(self, package):
+        """
+        Sprawdza, czy paczka może zmieścić się w kontenerze.
+        """
         if package.W > self.W or package.H > self.H:
             return False
         for p in self.packages:
@@ -18,6 +30,10 @@ class Bin:
         return True
 
     def place_package(self, package):
+        """
+        Umieszcza paczkę na pierwszym możliwym wolnym miejscu, z rotacją.
+        Zwraca True, jeśli udało się umieścić paczkę, w przeciwnym razie False.
+        """
         for rotate in [False, True]:
             if rotate:
                 package.change_orientation()
