@@ -1,5 +1,6 @@
 from package import Package
 from bin import Bin
+from tabu_search import tabu_search
 
 
 def check_for_collisions(p1: Package, p2: Package) -> bool:
@@ -11,7 +12,7 @@ def check_for_collisions(p1: Package, p2: Package) -> bool:
 
 bins = []
 packages = []
-f = open("BinPackingData\M1b.txt")
+f = open("BinPackingData\M1a.txt")
 n = int(f.readline().strip())
 print(n)
 for i in range(n):
@@ -25,10 +26,13 @@ m = int(f.readline().strip())
 print(m)
 for i in range(m):
     a = f.readline().strip().split(" ")
-    p = Package(a[0], a[1], a[2])
+    p = Package(a[0], int(a[1]), int(a[2]))
     print(p)
     packages.append(p)
 f.close()
+
+best_solution = tabu_search(bins, packages)
+print("Best solution found:", sum(1 for b in best_solution if b.packages))
 
 
 

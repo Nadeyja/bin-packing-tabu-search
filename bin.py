@@ -1,35 +1,45 @@
-from box import Box
-
-class Bin(Box):
+class Bin:
     bin_start_id = 0
-    def __init__(self, w, h):
-        super().__init__(w, h)
-        self.ID = Bin.bin_start_id
-        self.packages = []
-        Bin.bin_start_id += 1
 
-    def __str__(self):
-        return f"ID = {self.ID}, Height = {self.H}, Width = {self.W}"
+    def __init__(self, w, h):
+        self.W = w
+        self.H = h
+        self.ID = Bin.bin_start_id
+        Bin.bin_start_id += 1
+        self.packages = []
+
+    def can_fit(self, package):
+        if package.W > self.W or package.H > self.H:
+            return False
+        for p in self.packages:
+            if not (package.X + package.W <= p.X or package.X >= p.X + p.W or
+                    package.Y + package.H <= p.Y or package.Y >= p.Y + p.H):
+                return False
+        return True
+
+    def place_package(self, package):
+        for rotate in [False, True]:
+            if rotate:
+                package.change_orientation()
+            for x in range(self.W - package.W + 1):
+                for y in range(self.H - package.H + 1):
+                    package.move_package(x, y)
+                    if self.can_fit(package):
+                        self.add_package(package)
+                        return True
+            if rotate:
+                package.change_orientation()  #cofniecie rotacji
+        return False
 
     def add_package(self, package):
-        if self.can_pack_package(package):
-            self.packages.append(package)
-            return True
-        else:
-            print("Cannot add package to bin")
-            return False
+        self.packages.append(package)
 
-    def get_number_of_packages(self):
-        return len(self.packages)
+    def remove_package_by_id(self, package_id):
+        for p in self.packages:
+            if p.ID == package_id:
+                self.packages.remove(p)
+                return True
+        return False
 
-    def reset_bin(self):
-        print("Removed " + str(self.get_number_of_packages()) + " packages!")
-        self.packages = []
-
-    def can_pack_package(self, package):
-        if package.X+package.W>=self.W or package.X<=0 or package.Y+package.H>=self.H or package.Y<=0:
-            return False
-        else:
-            return True
-
-
+    def __repr__(self):
+        return f"Bin({self.ID}, {[p.ID for p in self.packages]})"
