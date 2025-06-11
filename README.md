@@ -86,6 +86,22 @@ After running, the algorithm will:
 
 ---
 
+## 📊 Results
+
+Below are results (tested on Intel Core i7-8700K @ 4.2GHz):
+
+| Dataset | Iterations | Tabu size | Bins Used | Runtime (s) |
+|---------|------------|-----------|-----------|-------------|
+| M1a.txt | 25         | 6         | 8         | 37.3        |
+| M1b.txt | 32         | 2         | 9         | 48          |
+| M1c.txt | 1          | 10        | 10        | 3           |
+| M1d.txt | 1          | 10        | 10        | 2.9         |
+| M1e.txt | 1          | 10        | 10        | 2.9         |
+
+*Results may vary depending on Tabu Search parameters and hardware.*
+
+---
+
 ## 📦 Requirements
 
 * Python 3.7+

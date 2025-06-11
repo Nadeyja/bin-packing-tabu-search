@@ -2,7 +2,6 @@ from copy import deepcopy
 import matplotlib.pyplot as plt
 import matplotlib.patches as patches
 
-
 def evaluate_solution(bins):
     """
     Funkcja celu. Zwraca liczbę binów, które zawierają paczki.
@@ -24,7 +23,8 @@ def generate_initial_solution(bins, packages):
 
 def get_neighbors(solution):
     """
-    Generuje sąsiednie rozwiązania przez przeniesienie paczki z jednego binu do drugiego.
+    Generuje sąsiednie rozwiązania przez przeniesienie paczki z jednego binu do drugiego,
+    rozważając także rotację paczki.
     """
     neighbors = []
     for i, b in enumerate(solution):
@@ -32,11 +32,13 @@ def get_neighbors(solution):
             for j, b2 in enumerate(solution):
                 if i == j:
                     continue
-                new_solution = deepcopy(solution)
-                p_copy = deepcopy(p)
-                if new_solution[i].remove_package_by_id(p.ID):
-                    if new_solution[j].place_package(p_copy):
-                        neighbors.append(new_solution)
+                for rotated in [False, True]:
+                    new_solution = deepcopy(solution)
+                    p_copy = deepcopy(p)
+                    p_copy.Rotated = rotated
+                    if new_solution[i].remove_package_by_id(p.ID):
+                        if new_solution[j].place_package(p_copy):
+                            neighbors.append(new_solution)
     return neighbors
 
 def visualize_solution(bins):
@@ -57,7 +59,7 @@ def visualize_solution(bins):
         plt.grid(True)
         plt.show()
 
-def tabu_search(bins, packages, iterations=100, tabu_size=10):
+def tabu_search(bins, packages, iterations=100, tabu_size=10, visualize=True):
     """
     Algorytm Tabu Search.
 
@@ -69,6 +71,7 @@ def tabu_search(bins, packages, iterations=100, tabu_size=10):
     current_solution = generate_initial_solution(bins, packages)
     best_solution = deepcopy(current_solution)
     tabu_list = []
+    best_solutions_history = [evaluate_solution(current_solution)]
 
     for _ in range(iterations):
         neighbors = get_neighbors(current_solution)
@@ -82,6 +85,7 @@ def tabu_search(bins, packages, iterations=100, tabu_size=10):
         tabu_list.append(repr(current_solution))
         if len(tabu_list) > tabu_size:
             tabu_list.pop(0)
+        best_solutions_history.append(evaluate_solution(best_solution))
 
     #info o rozmieszczeniu paczek
     print("\nRozmieszczenie paczek:")
@@ -91,6 +95,7 @@ def tabu_search(bins, packages, iterations=100, tabu_size=10):
             print(f"  Package ID {p.ID}: X={p.X}, Y={p.Y}, W={p.W}, H={p.H}, Rotated={p.Rotated}")
 
     #wizualizacja
-    visualize_solution(best_solution)
+    if visualize:
+        visualize_solution(best_solution)
 
-    return best_solution
+    return best_solution, best_solutions_history

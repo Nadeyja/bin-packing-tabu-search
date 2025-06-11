@@ -1,6 +1,7 @@
 from package import Package
 from bin import Bin
 from tabu_search import tabu_search
+import matplotlib.pyplot as plt
 
 
 def check_for_collisions(p1: Package, p2: Package) -> bool:
@@ -34,8 +35,18 @@ for i in range(m):
 f.close()
 
 #wynik algorytmu i wizualizacja
-best_solution = tabu_search(bins, packages)
+iterations = 25
+tabu_size = 6
+best_solution, best_solutions_history = tabu_search(bins, packages, iterations, tabu_size, visualize=True)
 print("Best solution found:", sum(1 for b in best_solution if b.packages))
+
+#wykres zmian best_solution
+plt.plot(best_solutions_history)
+plt.xlabel('Iteracja')
+plt.ylabel('Liczba użytych binów')
+plt.title('Zmiana best_solution w trakcie iteracji')
+plt.grid(True)
+plt.show()
 
 
 
