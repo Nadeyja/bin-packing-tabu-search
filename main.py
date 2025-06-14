@@ -1,6 +1,7 @@
 from package import Package
 from bin import Bin
 from tabu_search import tabu_search
+from or_tools import or_tools_bpp
 import matplotlib.pyplot as plt
 
 
@@ -34,11 +35,16 @@ for i in range(m):
     packages.append(p)
 f.close()
 
-#wynik algorytmu i wizualizacja
+# or tools do porównania
+or_tools_bpp(packages,bins)
+
+# wynik algorytmu i wizualizacja
 iterations = 25
 tabu_size = 6
 best_solution, best_solutions_history = tabu_search(bins, packages, iterations, tabu_size, visualize=True)
 print("Best solution found:", sum(1 for b in best_solution if b.packages))
+
+
 
 #wykres zmian best_solution
 plt.plot(best_solutions_history)
